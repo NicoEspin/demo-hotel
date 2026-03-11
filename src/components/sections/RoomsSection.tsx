@@ -91,78 +91,80 @@ export function RoomsSection() {
           </div>
         </div>
 
-        <div
-          ref={trackRef}
-          className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pr-5 sm:pr-8 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pr-0"
-          aria-label={content.rooms.title}
-        >
-          {content.rooms.cards.map((room) => {
-            const featured = room.title === 'Suite Lago'
-            const roomImage = roomImages[room.slot]
+        <div className="relative lg:static">
+          <div
+            ref={trackRef}
+            className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pr-5 sm:pr-8 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pr-0"
+            aria-label={content.rooms.title}
+          >
+            {content.rooms.cards.map((room) => {
+              const featured = room.title === 'Suite Lago'
+              const roomImage = roomImages[room.slot]
 
-            return (
-              <article
-                key={room.title}
-                className={`group atmospheric-card relative min-w-[84vw] max-w-[28rem] snap-center overflow-hidden p-4 sm:min-w-[25rem] lg:min-w-0 lg:max-w-none ${featured ? 'border-gold/70 lg:translate-y-4 lg:p-5' : ''}`}
-                data-room-card
-                data-cursor-hover
-              >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={roomImage.src}
-                    alt={roomImage.alt}
-                    className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${featured ? 'aspect-[4/5]' : 'aspect-[4/5] lg:aspect-[4/4.8]'}`}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,6,0.02)_0%,rgba(10,8,6,0.08)_40%,rgba(10,8,6,0.88)_100%)] opacity-70 transition-opacity duration-500 group-hover:opacity-95" />
-                  <div className="absolute inset-x-0 bottom-0 hidden justify-between gap-4 px-5 pb-5 opacity-0 transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 lg:flex lg:translate-y-4">
-                    <span className="text-[0.65rem] uppercase tracking-cinematic text-gold-soft/72">{room.price}</span>
+              return (
+                <article
+                  key={room.title}
+                  className={`group atmospheric-card relative min-w-[84vw] max-w-[28rem] snap-center overflow-hidden p-4 sm:min-w-[25rem] lg:min-w-0 lg:max-w-none ${featured ? 'border-gold/70 lg:translate-y-4 lg:p-5' : ''}`}
+                  data-room-card
+                  data-cursor-hover
+                >
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={roomImage.src}
+                      alt={roomImage.alt}
+                      className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${featured ? 'aspect-[4/5]' : 'aspect-[4/5] lg:aspect-[4/4.8]'}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,6,0.02)_0%,rgba(10,8,6,0.08)_40%,rgba(10,8,6,0.88)_100%)] opacity-70 transition-opacity duration-500 group-hover:opacity-95" />
+                    <div className="absolute inset-x-0 bottom-0 hidden justify-between gap-4 px-5 pb-5 opacity-0 transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 lg:flex lg:translate-y-4">
+                      <span className="text-[0.65rem] uppercase tracking-cinematic text-gold-soft/72">{room.price}</span>
+                      <a href="#reservar" className="eyebrow-link" aria-label={room.cta}>
+                        {room.cta}
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 px-2 pb-3 pt-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-[0.65rem] uppercase tracking-cinematic text-gold/85">{room.price}</p>
+                        <h3 className="font-display text-4xl font-light text-cream sm:text-[2.75rem]">{room.title}</h3>
+                      </div>
+                      {featured ? <span className="mt-3 h-px w-12 bg-gold/55" aria-hidden="true" /> : null}
+                    </div>
+
+                    <p className="whitespace-pre-line text-sm leading-7 text-gold-soft/76">{room.description}</p>
+                    <p className="text-xs uppercase tracking-[0.22em] text-muted">{room.includes.join(' · ')}</p>
                     <a href="#reservar" className="eyebrow-link" aria-label={room.cta}>
                       {room.cta}
                     </a>
                   </div>
-                </div>
+                </article>
+              )
+            })}
+          </div>
 
-                <div className="space-y-4 px-2 pb-3 pt-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-[0.65rem] uppercase tracking-cinematic text-gold/85">{room.price}</p>
-                      <h3 className="font-display text-4xl font-light text-cream sm:text-[2.75rem]">{room.title}</h3>
-                    </div>
-                    {featured ? <span className="mt-3 h-px w-12 bg-gold/55" aria-hidden="true" /> : null}
-                  </div>
-
-                  <p className="whitespace-pre-line text-sm leading-7 text-gold-soft/76">{room.description}</p>
-                  <p className="text-xs uppercase tracking-[0.22em] text-muted">{room.includes.join(' · ')}</p>
-                  <a href="#reservar" className="eyebrow-link" aria-label={room.cta}>
-                    {room.cta}
-                  </a>
-                </div>
-              </article>
-            )
-          })}
-        </div>
-
-        <div className="flex items-center justify-end gap-3 lg:hidden">
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold/25 bg-surface/80 text-gold transition duration-300 hover:border-gold/50 hover:text-gold-soft disabled:pointer-events-none disabled:opacity-35"
-            aria-label="Desplazar habitaciones hacia la izquierda"
-            onClick={() => scrollRooms('prev')}
-            disabled={!canScrollPrev}
-          >
-            <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
-          </button>
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold/25 bg-surface/80 text-gold transition duration-300 hover:border-gold/50 hover:text-gold-soft disabled:pointer-events-none disabled:opacity-35"
-            aria-label="Desplazar habitaciones hacia la derecha"
-            onClick={() => scrollRooms('next')}
-            disabled={!canScrollNext}
-          >
-            <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
-          </button>
+          <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-10 flex items-center justify-between px-1 sm:px-2 lg:hidden">
+            <button
+              type="button"
+              className="pointer-events-auto inline-flex h-11 w-11 -translate-y-2 items-center justify-center rounded-full border border-gold/30 bg-bg/82 text-gold shadow-[0_14px_30px_rgba(0,0,0,0.28)] backdrop-blur-md transition duration-300 hover:border-gold/55 hover:text-gold-soft focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold disabled:pointer-events-none disabled:opacity-35"
+              aria-label="Desplazar habitaciones hacia la izquierda"
+              onClick={() => scrollRooms('prev')}
+              disabled={!canScrollPrev}
+            >
+              <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
+            </button>
+            <button
+              type="button"
+              className="pointer-events-auto inline-flex h-11 w-11 -translate-y-2 items-center justify-center rounded-full border border-gold/30 bg-bg/82 text-gold shadow-[0_14px_30px_rgba(0,0,0,0.28)] backdrop-blur-md transition duration-300 hover:border-gold/55 hover:text-gold-soft focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold disabled:pointer-events-none disabled:opacity-35"
+              aria-label="Desplazar habitaciones hacia la derecha"
+              onClick={() => scrollRooms('next')}
+              disabled={!canScrollNext}
+            >
+              <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
       </div>
     </section>
