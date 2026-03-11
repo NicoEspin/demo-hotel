@@ -54,6 +54,7 @@ export function useScrollBatch(
 
       ScrollTrigger.batch(selector, {
         start: 'top 85%',
+        once: true,
         onEnter: (elements) => {
           gsap.from(elements, {
             opacity: 0,

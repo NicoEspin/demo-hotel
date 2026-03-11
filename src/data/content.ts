@@ -21,9 +21,9 @@ export const content = {
     quote:
       'Un hotel con historia no se construye con años.\nSe construye con noches bien vividas.',
     stats: [
-      { value: 20, prefix: '+', suffix: ' años de historia', label: '+20 años de historia' },
-      { value: 4800, prefix: '+', suffix: ' huéspedes', label: '+4.800 huéspedes' },
-      { value: 49, prefix: '', suffix: ' promedio', label: '4.9★ promedio', decimals: 1 },
+      { value: 24, prefix: '+', suffix: ' años de historia', label: '+24 años de historia' },
+      { value: 6200, prefix: '+', suffix: ' huéspedes', label: '+6.200 huéspedes' },
+      { value: 48, prefix: '', suffix: '★ promedio', label: '4.8★ promedio', decimals: 1 },
     ],
   },
   rooms: {
@@ -169,7 +169,7 @@ export const content = {
       phone: '+54 9 3541 56-0518',
       email: 'hola@hotelcalifornia.com.ar',
     },
-    copyright: '© 2025 Hotel California · Todos los derechos reservados',
+    copyright: '© 2026 Hotel California · Todos los derechos reservados',
     credit: 'Desarrollado por Synttek',
   },
 } as const

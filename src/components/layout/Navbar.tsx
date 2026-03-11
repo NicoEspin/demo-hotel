@@ -10,9 +10,10 @@ import { prefersReducedMotion } from '@/hooks/useGSAPScrollTrigger'
 type NavbarProps = {
   links: ReadonlyArray<{ href: string; label: string }>
   ctaLabel: string
+  onMenuOpenChange?: (isOpen: boolean) => void
 }
 
-export function Navbar({ links, ctaLabel }: NavbarProps) {
+export function Navbar({ links, ctaLabel, onMenuOpenChange }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
   const menuPanelRef = useRef<HTMLDivElement>(null)
@@ -29,6 +30,14 @@ export function Navbar({ links, ctaLabel }: NavbarProps) {
       body.classList.remove('overflow-locked')
     }
   }, [isMenuOpen])
+
+  useEffect(() => {
+    onMenuOpenChange?.(isMenuOpen)
+
+    return () => {
+      onMenuOpenChange?.(false)
+    }
+  }, [isMenuOpen, onMenuOpenChange])
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -198,9 +207,7 @@ export function Navbar({ links, ctaLabel }: NavbarProps) {
         </nav>
 
         <div className="relative space-y-6">
-          <p data-mobile-meta className="max-w-xs text-sm leading-7 text-gold-soft/70">
-            {ctaLabel}
-          </p>
+
           <a
             href="#reservar"
             data-mobile-cta

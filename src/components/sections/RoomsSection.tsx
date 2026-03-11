@@ -1,14 +1,77 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+
+import clasicaImage from '@/assets/clasica.webp'
+import suiteLagoImage from '@/assets/suite-lago.webp'
+import suiteFamiliarImage from '@/assets/suite-familiar.webp'
 import { content } from '@/data/content'
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { useScrollBatch } from '@/hooks/useGSAPScrollTrigger'
 
+const roomImages = {
+  '[ROOM_CLASICA]': {
+    src: clasicaImage,
+    alt: 'Habitacion clasica del Hotel California con cama queen y vista al jardin',
+  },
+  '[ROOM_LAGO]': {
+    src: suiteLagoImage,
+    alt: 'Suite Lago del Hotel California con vista panoramica al lago',
+  },
+  '[ROOM_FAMILIAR]': {
+    src: suiteFamiliarImage,
+    alt: 'Suite Familiar del Hotel California con espacios amplios para compartir',
+  },
+} as const
+
 export function RoomsSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(true)
 
   useScrollBatch('[data-room-card]', sectionRef)
+
+  useEffect(() => {
+    const track = trackRef.current
+
+    if (!track) {
+      return undefined
+    }
+
+    const syncControls = () => {
+      const maxScrollLeft = track.scrollWidth - track.clientWidth
+      setCanScrollPrev(track.scrollLeft > 12)
+      setCanScrollNext(track.scrollLeft < maxScrollLeft - 12)
+    }
+
+    syncControls()
+    track.addEventListener('scroll', syncControls, { passive: true })
+    window.addEventListener('resize', syncControls)
+
+    return () => {
+      track.removeEventListener('scroll', syncControls)
+      window.removeEventListener('resize', syncControls)
+    }
+  }, [])
+
+  const scrollRooms = (direction: 'prev' | 'next') => {
+    const track = trackRef.current
+    const firstCard = track?.querySelector<HTMLElement>('[data-room-card]')
+
+    if (!track || !firstCard) {
+      return
+    }
+
+    const styles = window.getComputedStyle(track)
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || '0')
+    const distance = firstCard.getBoundingClientRect().width + gap
+
+    track.scrollBy({
+      left: direction === 'next' ? distance : -distance,
+      behavior: 'smooth',
+    })
+  }
 
   return (
     <section ref={sectionRef} id="habitaciones" className="section-shell">
@@ -29,11 +92,13 @@ export function RoomsSection() {
         </div>
 
         <div
+          ref={trackRef}
           className="scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pr-5 sm:pr-8 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pr-0"
           aria-label={content.rooms.title}
         >
           {content.rooms.cards.map((room) => {
             const featured = room.title === 'Suite Lago'
+            const roomImage = roomImages[room.slot]
 
             return (
               <article
@@ -43,7 +108,13 @@ export function RoomsSection() {
                 data-cursor-hover
               >
                 <div className="relative overflow-hidden">
-                  <ImagePlaceholder className={`w-full transition-transform duration-700 group-hover:scale-[1.04] ${featured ? 'aspect-[4/5]' : 'aspect-[4/5] lg:aspect-[4/4.8]'}`} label={room.slot} />
+                  <img
+                    src={roomImage.src}
+                    alt={roomImage.alt}
+                    className={`w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] ${featured ? 'aspect-[4/5]' : 'aspect-[4/5] lg:aspect-[4/4.8]'}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,6,0.02)_0%,rgba(10,8,6,0.08)_40%,rgba(10,8,6,0.88)_100%)] opacity-70 transition-opacity duration-500 group-hover:opacity-95" />
                   <div className="absolute inset-x-0 bottom-0 hidden justify-between gap-4 px-5 pb-5 opacity-0 transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 lg:flex lg:translate-y-4">
                     <span className="text-[0.65rem] uppercase tracking-cinematic text-gold-soft/72">{room.price}</span>
@@ -71,6 +142,27 @@ export function RoomsSection() {
               </article>
             )
           })}
+        </div>
+
+        <div className="flex items-center justify-end gap-3 lg:hidden">
+          <button
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold/25 bg-surface/80 text-gold transition duration-300 hover:border-gold/50 hover:text-gold-soft disabled:pointer-events-none disabled:opacity-35"
+            aria-label="Desplazar habitaciones hacia la izquierda"
+            onClick={() => scrollRooms('prev')}
+            disabled={!canScrollPrev}
+          >
+            <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gold/25 bg-surface/80 text-gold transition duration-300 hover:border-gold/50 hover:text-gold-soft disabled:pointer-events-none disabled:opacity-35"
+            aria-label="Desplazar habitaciones hacia la derecha"
+            onClick={() => scrollRooms('next')}
+            disabled={!canScrollNext}
+          >
+            <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
+          </button>
         </div>
       </div>
     </section>

@@ -3,18 +3,18 @@ import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
+import aboutImage from '@/assets/about.webp'
 import { GoldDivider } from '@/components/ui/GoldDivider'
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { content } from '@/data/content'
 import { prefersReducedMotion } from '@/hooks/useGSAPScrollTrigger'
 
 function formatStatValue(value: number, decimals = 0) {
   if (decimals > 0) {
-    return (value / 10 ** decimals).toFixed(decimals)
+    return (Math.round(value) / 10 ** decimals).toFixed(decimals)
   }
 
-  return new Intl.NumberFormat('es-AR').format(value)
+  return new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 }).format(Math.round(value))
 }
 
 export function AboutSection() {
@@ -53,6 +53,7 @@ export function AboutSection() {
         scrollTrigger: {
           trigger: '[data-about-stats]',
           start: 'top 82%',
+          once: true,
         },
       })
 
@@ -71,25 +72,45 @@ export function AboutSection() {
         const value = Number(element.dataset.value ?? '0')
         const decimals = Number(element.dataset.decimals ?? '0')
         const prefix = element.dataset.prefix ?? ''
-        const suffix = element.dataset.suffix ?? ''
+        const card = element.closest('article')
+        const counter = { value: 0 }
 
-        gsap.fromTo(
+        element.textContent = `${prefix}${formatStatValue(counter.value, decimals)}`
+
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: card ?? element,
+            start: 'top 86%',
+            once: true,
+          },
+        })
+
+        timeline.fromTo(
           element,
-          { statValue: 0 },
+          { yPercent: 8, opacity: 0 },
           {
-            statValue: value,
-            duration: 1.8,
+            duration: 1.2,
+            yPercent: 0,
+            opacity: 1,
             ease: 'power2.out',
-            scrollTrigger: {
-              trigger: element,
-              start: 'top 86%',
-            },
+          },
+          0,
+        )
+
+        timeline.to(
+          counter,
+          {
+            value,
+            duration: 1.6,
+            ease: 'power2.out',
             onUpdate() {
-              const currentValue = gsap.getProperty(element, 'statValue')
-              const displayValue = Number.isFinite(currentValue) ? Number(currentValue) : 0
-              element.textContent = `${prefix}${formatStatValue(displayValue, decimals)}${suffix}`
+              element.textContent = `${prefix}${formatStatValue(counter.value, decimals)}`
+            },
+            onComplete() {
+              element.textContent = `${prefix}${formatStatValue(value, decimals)}`
             },
           },
+          0,
         )
       })
     },
@@ -114,7 +135,13 @@ export function AboutSection() {
           <div className="relative overflow-hidden atmospheric-card p-3">
             <div className="absolute left-4 top-4 h-16 w-16 rounded-full border border-gold/20" aria-hidden="true" />
             <div data-about-img className="relative">
-              <ImagePlaceholder className="aspect-[4/5] w-full" label="[ABOUT_IMG]" />
+              <img
+                src={aboutImage}
+                alt="Interior del Hotel California con luz cálida y detalles refinados"
+                className="aspect-[4/5] w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
               <div className="pointer-events-none absolute inset-3 bg-[linear-gradient(180deg,rgba(10,8,6,0)_0%,rgba(10,8,6,0.18)_55%,rgba(10,8,6,0.6)_100%)]" />
             </div>
           </div>
@@ -124,20 +151,29 @@ export function AboutSection() {
               const decimals = 'decimals' in stat ? stat.decimals : 0
 
               return (
-                <article key={stat.label} className="atmospheric-card min-h-[10.5rem] p-5 sm:min-h-[11rem] sm:p-6">
-                  <p className="mb-3 text-[0.65rem] uppercase tracking-cinematic text-gold/80">{content.about.label}</p>
-                  <p className="font-display text-4xl font-light text-cream sm:text-[2.8rem]">
+                <article
+                  key={stat.label}
+                  className="atmospheric-card flex min-h-[10.5rem] min-w-0 flex-col items-center justify-center p-5 text-center sm:min-h-[11rem] sm:p-6"
+                >
+                  <p className="mb-3 text-center text-[0.65rem] uppercase tracking-cinematic text-gold/80">{content.about.label}</p>
+                  <p className="text-center font-display text-[clamp(2.25rem,4vw,2.8rem)] font-light leading-[0.88] text-cream">
                     <span
-                      data-stat-value
-                      data-value={stat.value}
-                      data-decimals={decimals}
-                      data-prefix={stat.prefix}
-                      data-suffix={stat.suffix}
+                      className="inline-flex flex-col items-center justify-center gap-2 text-center tabular-nums"
                     >
-                      {`${stat.prefix}${formatStatValue(stat.value, decimals)}${stat.suffix}`}
+                      <span
+                        className="inline-block max-w-full origin-center will-change-transform"
+                        data-stat-value
+                        data-value={stat.value}
+                        data-decimals={decimals}
+                        data-prefix={stat.prefix}
+                      >
+                        {`${stat.prefix}${formatStatValue(stat.value, decimals)}`}
+                      </span>
+                      <span className="max-w-full text-center text-[0.7rem] uppercase tracking-[0.22em] text-gold-soft/72 sm:text-sm">
+                        {stat.suffix}
+                      </span>
                     </span>
                   </p>
-                  <p className="mt-4 text-sm leading-6 text-gold-soft/68">{stat.label}</p>
                 </article>
               )
             })}

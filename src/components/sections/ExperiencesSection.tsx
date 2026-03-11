@@ -125,19 +125,17 @@ export function ExperiencesSection() {
                 data-cursor-hover
               >
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(201,169,110,0.08),transparent_38%,rgba(10,8,6,0.2))] opacity-70 transition duration-700 group-hover:opacity-100" />
-                <div className="pointer-events-none absolute right-5 top-5 h-16 w-16 rounded-full border border-gold/10 transition duration-700 group-hover:scale-110 group-hover:border-gold/20" />
+                <div className="pointer-events-none absolute right-5 top-5 flex h-16 w-16 items-center justify-center rounded-full border border-gold/10 text-[0.65rem] uppercase tracking-cinematic text-gold-soft/40 transition duration-700 group-hover:scale-110 group-hover:border-gold/20">
+                  <span>{(index + 1).toString().padStart(2, '0')}</span>
+                </div>
 
-                <div className="relative flex items-start justify-between gap-4">
+                <div className="relative flex items-start justify-between gap-4 pr-20">
                   <div
                     className="flex h-14 w-14 items-center justify-center rounded-full border border-gold/20 bg-bg/45 text-gold"
                     data-experience-icon
                   >
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </div>
-
-                  <span className="text-[0.65rem] uppercase tracking-cinematic text-gold-soft/40">
-                    {(index + 1).toString().padStart(2, '0')}
-                  </span>
                 </div>
 
                 <div className="relative mt-8 flex-1 space-y-4">

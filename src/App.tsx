@@ -1,7 +1,7 @@
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Footer } from '@/components/layout/Footer'
 import { Navbar } from '@/components/layout/Navbar'
@@ -27,6 +27,7 @@ type NavigationLink = {
 
 function App() {
   useLenis()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const navigationLinks = useMemo<ReadonlyArray<NavigationLink>>(
     () => [
@@ -42,8 +43,12 @@ function App() {
     <div className="relative min-h-screen bg-bg text-cream">
       <GrainOverlay />
       <CustomCursor />
-      <FloatingWhatsAppButton href={content.booking.whatsappHref} label={content.booking.ctaWhatsapp} />
-      <Navbar links={navigationLinks} ctaLabel={content.nav.cta} />
+      <FloatingWhatsAppButton
+        href={content.booking.whatsappHref}
+        label={content.booking.ctaWhatsapp}
+        hidden={isMobileMenuOpen}
+      />
+      <Navbar links={navigationLinks} ctaLabel={content.nav.cta} onMenuOpenChange={setIsMobileMenuOpen} />
 
       <main id="main-content" tabIndex={-1} className="relative overflow-x-clip">
         <HeroSection />

@@ -3,8 +3,8 @@ import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
+import heroImage from '@/assets/hero.webp'
 import { content } from '@/data/content'
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder'
 import { prefersReducedMotion } from '@/hooks/useGSAPScrollTrigger'
 
 const titleLines = content.hero.title.split('\n')
@@ -73,7 +73,13 @@ export function HeroSection() {
   return (
     <section ref={sectionRef} id="top" className="relative min-h-[100svh] overflow-hidden pt-24">
       <div className="absolute inset-0" data-hero-bg-wrap>
-        <ImagePlaceholder className="h-full w-full border-0" label="[HERO_BG]" />
+        <img
+          src={heroImage}
+          alt="Vista exterior del Hotel California con atmósfera cinematográfica"
+          className="h-full w-full object-cover"
+          loading="eager"
+          decoding="async"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,8,6,0.18)_0%,rgba(10,8,6,0.36)_28%,rgba(10,8,6,0.75)_72%,#0A0806_100%)]" data-hero-bg />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_28%,rgba(201,169,110,0.15),transparent_28%),radial-gradient(circle_at_20%_20%,rgba(245,239,228,0.08),transparent_24%)]" data-hero-vignette />
       </div>
